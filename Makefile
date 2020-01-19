@@ -10,6 +10,7 @@ install:
 
 develop:
 	pip install -e ".[dev]"
+	pre-commit install
 	python setup.py develop
 
 doctest:
@@ -20,7 +21,11 @@ test: doctest
 	rm -rf .coverage*
 	pytest --nbval-lax doc/*.ipynb
 
-check: flake test
+precommit:
+	pre-commit run
+
+spelling:
+	codespell sklego/*.py
 
 docs:
 	rm -rf doc/.ipynb_checkpoints
@@ -34,6 +39,11 @@ clean:
 	rm -rf scikit_lego.egg-info
 	rm -rf .ipynb_checkpoints
 	rm -rf .coverage*
+
+black:
+	black sklego tests setup.py
+
+check: flake precommit test spelling clean
 
 pypi: clean
 	python setup.py sdist
